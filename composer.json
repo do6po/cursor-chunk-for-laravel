@@ -26,10 +26,7 @@
     "autoload": {
         "psr-4": {
             "Do6po\\LaravelCursorChunk\\": "src/"
-        },
-        "files": [
-            "src/Helpers/functions.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
