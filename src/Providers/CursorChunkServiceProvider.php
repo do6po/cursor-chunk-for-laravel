@@ -3,6 +3,7 @@
 namespace Do6po\LaravelCursorChunk\Providers;
 
 use Closure;
+use Generator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
@@ -13,7 +14,7 @@ class CursorChunkServiceProvider extends ServiceProvider
     {
         Builder::macro(
             'cursorChunk',
-            function (int $limit = 500, Closure $action = null) {
+            function (int $limit = 500, Closure $action = null): Generator {
                 /** @var Builder $this */
                 $chunk = $this->getModel()->newCollection();
                 foreach ($this->cursor() as $model) {
@@ -28,13 +29,15 @@ class CursorChunkServiceProvider extends ServiceProvider
                     }
                 }
 
-                yield $chunk;
+                if ($chunk->isNotEmpty()) {
+                    yield $chunk;
+                }
             }
         );
 
         \Illuminate\Database\Query\Builder::macro(
             'cursorChunk',
-            function (int $limit = 500, Closure $action = null) {
+            function (int $limit = 500, Closure $action = null): Generator {
                 /** @var Builder $this */
                 $chunk = Collection::make();
                 foreach ($this->cursor() as $model) {
@@ -49,7 +52,9 @@ class CursorChunkServiceProvider extends ServiceProvider
                     }
                 }
 
-                yield $chunk;
+                if ($chunk->isNotEmpty()) {
+                    yield $chunk;
+                }
             }
         );
     }
